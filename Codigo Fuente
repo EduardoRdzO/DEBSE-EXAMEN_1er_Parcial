@@ -1,0 +1,64 @@
+
+#include "LiquidCrystal.h" 
+#include "Servo.h"         
+
+LiquidCrystal lcd(9, 8, 5, 4, 3, 2);
+Servo servoMotorObj;  
+ 
+//pin analógico donde el potenciômetro está conectado
+int const potenciometroPin = 0;  
+ 
+//pin digital associado al control del servomotor
+int const servoMotorPin = 12; 
+ 
+//usada para tomar el valor del potenciometro
+int valPotenciometro;            
+ 
+void setup() {
+
+pinMode(13,OUTPUT);
+pinMode(7,OUTPUT);
+pinMode(10,OUTPUT);
+  //Inicializando o LCD
+  
+  lcd.begin(16, 2); 
+ 
+  //se asocia el numero del pin del servo 
+  servoMotorObj.attach(servoMotorPin); 
+}
+ 
+void loop() { 
+  //leyendo el valor del potenciometro (intervalo entre 0 e 1023)
+  valPotenciometro = analogRead(potenciometroPin); 
+  //mapeando el valor del potenciometro
+  valPotenciometro = map(valPotenciometro, 0, 1023, 0, 180);
+ 
+  //valor o ubu=icacion del potenciometro
+  servoMotorObj.write(valPotenciometro);   
+     
+  lcd.clear(); //limpia el display      
+  lcd.print("La puerta esta:"); //imprime texto
+   
+  lcd.setCursor(0,1); //posiciona el cursor
+   
+  //Mostrando en el lcd la pocision del potenciometro
+  if (valPotenciometro < 85  ) {
+    lcd.print("    ABIERTA");
+    digitalWrite(13,HIGH);
+    digitalWrite(7,LOW);
+    
+    digitalWrite(10,HIGH);
+  }   
+  if (valPotenciometro > 85 and valPotenciometro < 87) {
+    lcd.print("ENTRECERRADA");
+  }   
+  if (valPotenciometro > 87) {
+    lcd.print("    CERRADA");
+    digitalWrite(7,HIGH);
+    digitalWrite(13,LOW);
+    digitalWrite(10,LOW);
+    
+  }
+   
+  delay(30);            
+}
